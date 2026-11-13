@@ -239,6 +239,8 @@ const source = {
   "ui.promptInput.chooseAgent": "Choose agent",
   "ui.promptInput.chooseModel": "Choose model",
   "ui.promptInput.chooseVariant": "Choose model variant",
+  "ui.promptInput.dictate": "Dictate",
+  "ui.promptInput.dictate.stop": "Stop dictation",
   "ui.promptInput.send": "Send",
   "ui.promptInput.stop": "Stop",
   "ui.promptInput.exitShell": "Exit",

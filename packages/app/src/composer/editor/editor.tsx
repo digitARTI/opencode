@@ -63,6 +63,7 @@ import { selectQuoteCommentView, type QuoteCommentController } from "../quote-co
 import "../attachments/attachments.css"
 import "./editor.css"
 import "@/shell/palette-menu.css"
+import { VoiceDictationButton } from "@/voice/dictation"
 
 const MobilePanelDrawer = lazy(async () => {
   const { MobilePanelDrawer } = await import("@/shell/mobile-panel-drawer")
@@ -537,6 +538,15 @@ export function ComposerEditor(props: ComposerEditorProps) {
                     <Keybind keys={props.exitShellKeybind ?? ["ESC"]} variant="neutral" />
                   </span>
                 </Button>
+              </Show>
+              <Show when={mode() === "normal"}>
+                <VoiceDictationButton
+                  disabled={props.disabled || props.readOnly}
+                  onTranscript={(text) => {
+                    props.controller.restoreFocus()
+                    document.execCommand("insertText", false, text)
+                  }}
+                />
               </Show>
               <ComposerEditorSubmitButton
                 mode={mode()}

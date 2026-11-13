@@ -28,10 +28,11 @@ export function StatusLane(props: {
     >
       <Show when={props.label}>
         {(label) => (
-          <div data-component="session-working" role="status" aria-label={label()}>
-            <span data-slot="timeline-status-label">
+          <div data-component="session-working" role="status">
+            <span data-slot="timeline-status-label" aria-hidden="true">
               <TextShimmer text={label()} active />
             </span>
+            <span class="sr-only">{label()}</span>
           </div>
         )}
       </Show>

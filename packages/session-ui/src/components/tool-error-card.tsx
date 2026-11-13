@@ -142,6 +142,10 @@ export function ToolErrorCard(props: ToolErrorCardProps) {
       data-open={open() ? "true" : "false"}
       variant="error"
     >
+      {/* Announce the failure when the card appears; the visible text alone sits in an aria-live=off timeline. */}
+      <span class="sr-only" role="alert">
+        {name()} {i18n.t("ui.toolErrorCard.failed")}
+      </span>
       <Collapsible class="tool-collapsible" data-open={open() ? "true" : "false"} open={open()} onOpenChange={setOpen}>
         <Collapsible.Trigger>
           <div data-component="tool-trigger">

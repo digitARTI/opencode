@@ -214,6 +214,7 @@ function ComposerModelControl(props: {
                 })
               }
             >
+              <span class="sr-only">{props.title}</span>
               {content()}
             </Button>
           }
@@ -231,6 +232,7 @@ function ComposerModelControl(props: {
                 data-action="composer-model"
                 data-control-type="drawer"
               >
+                <span class="sr-only">{props.title}</span>
                 {content()}
               </Button>
             )}

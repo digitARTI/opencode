@@ -24,6 +24,8 @@ import { getReadyMarkdown, preloadMarkdown } from "@opencode/session-ui/markdown
 import { createTimelineController, type TimelineController, type TimelineSessionSource } from "./controller"
 import type { TimelineFollow } from "./follow"
 import { createTimelineVirtualizer, type TimelineRouteReveal } from "./virtualizer"
+import { createTurnStatus } from "./turn-status"
+import { TurnStatusAnnouncer } from "./turn-status-announcer"
 import { createSelectedEffect } from "./selected-effect"
 import { containsDirectory } from "@opencode/util/path"
 import { isWorkspaceDirectory } from "@/workspaces/paths"
@@ -491,6 +493,28 @@ function MessageTimelineView(
     return !!status && (status !== "working" || !liveThought())
   }
 
+  // The one polite live region for the running turn's phase. It reads the active step so an earlier step's thought
+  // never outranks what the model is doing now, and it stays mounted while the session is routed.
+  const turnStep = createMemo(() => {
+    const active = projection.activeMessageID()
+
+    return active ? projection.assistantMessagesByParent().get(active)?.at(-1) : undefined
+  })
+
+  const turnStatus = createTurnStatus({
+    running: () => !!sessionID() && sessionStatus().type === "busy",
+    blocked: () => {
+      const id = sessionID()
+
+      if (!id) return
+      if (data.session.permission.list(id)?.length) return "approval"
+      if (data.session.form.list(id)?.length) return "answer"
+      return
+    },
+    step: turnStep,
+    t: language.t,
+  })
+
   // Undelivered input waits below the work the model has seen, so live status moves into the row above it.
   const activityRow = createMemo(() => projection.rows().some((row) => Predicate.isTagged(row, "Activity")))
 
@@ -525,7 +549,7 @@ function MessageTimelineView(
         fallback={
           <div class={`flex h-9 items-center gap-2 pt-3 text-[13px] font-[530] leading-text-compact ${turnPadding()}`}>
             <Show when={live() && showWorking()}>
-              <div data-component="session-working" role="status">
+              <div data-component="session-working">
                 <TextShimmer text={language.t("session.timeline.working")} active />
               </div>
             </Show>
@@ -550,6 +574,11 @@ function MessageTimelineView(
 
   return (
     <VirtualizedTimeline
+      overlay={
+        <Show when={props.active !== false}>
+          <TurnStatusAnnouncer status={turnStatus} />
+        </Show>
+      }
       bottomSpacer={activity(() => !activityRow())}
       deferred={(row) => {
         if (!Predicate.isTagged(row, "AssistantPart") || row.group.type !== "part") return false

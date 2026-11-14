@@ -137,6 +137,8 @@ export type TimelineRouteReveal = {
 type ViewProps = {
   header: JSX.Element
   bottomSpacer?: JSX.Element
+  /** Rendered beside the scroll container, outside it, so it is not part of the virtualized rows. */
+  overlay?: JSX.Element
   deferred: (row: TimelineRow.TimelineRow) => boolean
   renderRow: (row: Accessor<TimelineRow.TimelineRow>, onSizeChange?: () => void) => JSX.Element
 }
@@ -1159,6 +1161,7 @@ export function createTimelineVirtualizer(input: Input) {
             </svg>
           </button>
         </div>
+        {props.overlay}
         <ScrollView
           data-slot="session-timeline-scroll"
           viewportRef={bindListRoot}

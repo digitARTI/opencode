@@ -1121,6 +1121,7 @@ function ComposerEditorSelect(props: {
   const [store, setStore] = createStore({ open: false, loaded: false })
   const focus = pointerFocusReturn()
   let trigger: HTMLButtonElement | undefined
+  const i18n = useI18n()
 
   const setOpen = (open: boolean) => {
     setStore("open", open)
@@ -1133,12 +1134,12 @@ function ComposerEditorSelect(props: {
     if (!mobile() && store.open) setOpen(false)
   })
 
+  const currentLabel = () => props.options.find((option) => option.id === props.current)?.label ?? props.current
+
   const content = () => (
     <>
       {props.currentIcon}
-      <span class="truncate capitalize leading-5">
-        {props.options.find((option) => option.id === props.current)?.label ?? props.current}
-      </span>
+      <span class="truncate capitalize leading-5">{currentLabel()}</span>
       <span class="-ms-0.5 -me-1 flex shrink-0">
         <Icon name="chevron-down" />
       </span>
@@ -1166,7 +1167,7 @@ function ComposerEditorSelect(props: {
               variant="ghost-muted"
               size="normal"
               class={`max-w-[220px] justify-start ![font-weight:440] ${props.class ?? ""}`}
-              aria-label={props.title}
+              aria-label={i18n.t("ui.promptInput.selectCurrent", { value: currentLabel(), label: props.title })}
             >
               {content()}
             </Menu.Trigger>
@@ -1200,7 +1201,7 @@ function ComposerEditorSelect(props: {
           variant="ghost-muted"
           size="normal"
           class={`max-w-[220px] justify-start ![font-weight:440] ${props.class ?? ""}`}
-          aria-label={props.title}
+          aria-label={i18n.t("ui.promptInput.selectCurrent", { value: currentLabel(), label: props.title })}
           aria-haspopup="dialog"
           aria-expanded={store.open}
           onClick={() => setOpen(true)}

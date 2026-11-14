@@ -195,7 +195,7 @@ export function ProjectAvatar(props: ProjectAvatarProps) {
             </Show>
           }
         >
-          {(value) => <img src={value()} draggable={false} data-slot="project-avatar-image" />}
+          {(value) => <img src={value()} alt="" draggable={false} data-slot="project-avatar-image" />}
         </Show>
         <Show when={split.label}>
           {(label) => (
